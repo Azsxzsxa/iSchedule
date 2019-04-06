@@ -1,0 +1,44 @@
+{
+  "project_info": {
+    "project_number": "599510947442",
+    "firebase_url": "https://ischedule-f1182.firebaseio.com",
+    "project_id": "ischedule-f1182",
+    "storage_bucket": "ischedule-f1182.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:599510947442:android:cb812436265f2f10",
+        "android_client_info": {
+          "package_name": "com.example.ischedule"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "599510947442-dqq8ksblh1m3ulmsta9the78bodftmc3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ischedule",
+            "certificate_hash": "40811f53f7263c4a0ec3ef708684cdf6db3bb714"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDd1UX6FjEEZjClqxs2NjPQoDsp0_EVjsg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "599510947442-7gv7vt8g21f48ntlsiv6dg2vm8ap7d7p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
