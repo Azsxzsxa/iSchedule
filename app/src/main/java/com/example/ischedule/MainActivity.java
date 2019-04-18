@@ -28,8 +28,8 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText edt_title,edt_content;
-    Button btn_post,btn_update,btn_delete;
+    EditText edt_title, edt_content;
+    Button btn_post, btn_update, btn_delete;
     RecyclerView recyclerView;
 
     //firebase reference
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference databaseReference;
 
     FirebaseRecyclerOptions<Post> options;
-    FirebaseRecyclerAdapter<Post,MyRecyclerViewHolder> adapter;
+    FirebaseRecyclerAdapter<Post, MyRecyclerViewHolder> adapter;
     Post selectedPost;
     String selectedKey;
 
@@ -49,16 +49,16 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseApp.initializeApp(this);
 
-        edt_content = (EditText)findViewById(R.id.edt_content);
-        edt_title = (EditText)findViewById(R.id.edt_title);
-        btn_post = (Button)findViewById(R.id.btn_post);
-        btn_update=(Button)findViewById(R.id.btn_update) ;
-        btn_delete=(Button)findViewById(R.id.btn_delete);
-        recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this ));
+        edt_content = (EditText) findViewById(R.id.edt_content);
+        edt_title = (EditText) findViewById(R.id.edt_title);
+        btn_post = (Button) findViewById(R.id.btn_post);
+        btn_update = (Button) findViewById(R.id.btn_update);
+        btn_delete = (Button) findViewById(R.id.btn_delete);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        firebaseDatabase=FirebaseDatabase.getInstance();
-        databaseReference=firebaseDatabase.getReference("EDMT_FIREBASE");
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference("EDMT_FIREBASE");
 
 
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -85,16 +85,16 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 databaseReference
                         .child(selectedKey)
-                        .setValue(new Post(edt_title.getText().toString(),edt_content.getText().toString()))
+                        .setValue(new Post(edt_title.getText().toString(), edt_content.getText().toString(), false))//----------------
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                Toast.makeText(MainActivity.this,"Updated",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, "Updated", Toast.LENGTH_SHORT).show();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(MainActivity.this,""+e.getMessage(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -109,12 +109,12 @@ public class MainActivity extends AppCompatActivity {
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                Toast.makeText(MainActivity.this,"Deleted",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, "Deleted", Toast.LENGTH_SHORT).show();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(MainActivity.this,""+e.getMessage(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -123,24 +123,25 @@ public class MainActivity extends AppCompatActivity {
 
         displayComment();
     }
+
     @Override
-    protected void onStop(){
-        if(adapter != null)
+    protected void onStop() {
+        if (adapter != null)
             adapter.stopListening();
         super.onStop();
     }
-    private void postComment()
-    {
-        String title=edt_title.getText().toString();
-        String content=edt_content.getText().toString();
 
-        Post post= new Post(title,content);
+    private void postComment() {
+        String title = edt_title.getText().toString();
+        String content = edt_content.getText().toString();
+
+        Post post = new Post(title, content, false);
 
         databaseReference.push().
                 setValue(post).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-               Toast.makeText(MainActivity.this,"sent",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "sent", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -149,36 +150,70 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    private void displayComment()
-    {
-         options=
+
+    private void displayComment() {
+        options =
                 new FirebaseRecyclerOptions.Builder<Post>()
-                .setQuery(databaseReference,Post.class)
-                .build();
-        adapter=
+                        .setQuery(databaseReference, Post.class)
+                        .build();
+        adapter =
                 new FirebaseRecyclerAdapter<Post, MyRecyclerViewHolder>(options) {
                     @Override
-                    protected void onBindViewHolder(@NonNull MyRecyclerViewHolder holder, int position, @NonNull final Post model) {
+                    protected void onBindViewHolder(@NonNull final MyRecyclerViewHolder holder, final int position, @NonNull final Post model) {
                         holder.txt_title.setText(model.getTitle());
                         holder.txt_content.setText(model.getContent());
+                        if (model.getCompleted() != null && model.getCompleted()) {
+                            holder.btn_status.setText("COMPLETED");
+                        } else {
+                            holder.btn_status.setText("UNCOMPLETED");
+                        }
 
                         holder.setiItemClickListener(new IItemClickListener() {
                             @Override
                             public void onClick(View view, int position) {
-                                selectedPost=model;
-                                selectedKey=getSnapshots().getSnapshot(position).getKey();
-                                Log.d("key item",""+selectedKey);
+                                selectedPost = model;
+                                selectedKey = getSnapshots().getSnapshot(position).getKey();
+                                Log.d("key item", "" + selectedKey);
 
                                 edt_content.setText(model.getContent());
                                 edt_title.setText(model.getTitle());
                             }
                         });
+                        holder.btn_status.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                selectedKey = getSnapshots().getSnapshot(position).getKey();
+                                if (model.getCompleted() != null && model.getCompleted()) {
+                                    holder.btn_status.setText("UNCOMPLETED");
+                                    model.setCompleted(false);
+                                } else {
+                                    holder.btn_status.setText("COMPLETED");
+                                    model.setCompleted(true);
+
+                                }
+                                databaseReference
+                                        .child(selectedKey)
+                                        .setValue(new Post(model.getTitle(), model.getContent(), model.getCompleted()))
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Toast.makeText(MainActivity.this, "Updated", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(MainActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        });
+
                     }
 
                     @NonNull
                     @Override
                     public MyRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-                        View itemView= LayoutInflater.from(getBaseContext()).inflate(R.layout.post_item,viewGroup,false);
+                        View itemView = LayoutInflater.from(getBaseContext()).inflate(R.layout.post_item, viewGroup, false);
                         return new MyRecyclerViewHolder(itemView);
                     }
                 };

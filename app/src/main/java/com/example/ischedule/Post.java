@@ -2,15 +2,25 @@ package com.example.ischedule;
 
 public class Post {
 
-    private String title,content;
+    private String title, content;
+    private Boolean completed;
 
     public Post() {
 
     }
 
-    public Post(String title, String content) {
+    public Post(String title, String content, Boolean completed) {
         this.title = title;
-        this.content=content;
+        this.content = content;
+        this.completed = completed;
+    }
+
+    public Boolean getCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(Boolean completed) {
+        this.completed = completed;
     }
 
     public String getTitle() {

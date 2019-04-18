@@ -3,11 +3,13 @@ package com.example.ischedule;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class MyRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    TextView txt_title,txt_content;
+    TextView txt_title, txt_content;
+    Button btn_status;
     IItemClickListener iItemClickListener;
 
     public void setiItemClickListener(IItemClickListener iItemClickListener) {
@@ -17,8 +19,9 @@ public class MyRecyclerViewHolder extends RecyclerView.ViewHolder implements Vie
     public MyRecyclerViewHolder(@NonNull View itemView) {
         super(itemView);
 
-        txt_content=(TextView)itemView.findViewById(R.id.txt_content);
-        txt_title=(TextView)itemView.findViewById(R.id.txt_title);
+        txt_content = (TextView) itemView.findViewById(R.id.txt_content);
+        txt_title = (TextView) itemView.findViewById(R.id.txt_title);
+        btn_status = itemView.findViewById(R.id.btn_status);
 
         itemView.setOnClickListener(this);
 
@@ -26,6 +29,6 @@ public class MyRecyclerViewHolder extends RecyclerView.ViewHolder implements Vie
 
     @Override
     public void onClick(View view) {
-        iItemClickListener.onClick(view,getAdapterPosition());
+        iItemClickListener.onClick(view, getAdapterPosition());
     }
 }
